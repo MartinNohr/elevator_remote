@@ -11,8 +11,6 @@ RF24 radio(D4, D8);
 // these must be the same in the relay code
 enum {TXADR=0, RXADR};
 uint8_t addresses[][6] = { "Node0","Node1" };
-//const uint64_t txAddress = 0xE8E8F0F0E1LL;    // send controls
-//const uint64_t rxAddress = 0xE8E8F0F0E2LL;     // get elevator position
 unsigned long lastTimeButtonSent;
 // the bits in the control byte, also the index to the button arrays
 #define UP 0
@@ -65,15 +63,8 @@ int btnChangedIndex() {
 bool xmitData(byte* data, int bytes) {
     radio.stopListening();
     radio.openWritingPipe(addresses[TXADR]);
-    int tries = 5;
     bool success = false;
-    while (tries-- && !success) {
-        // attempt to send it
-        success = radio.write(data, bytes);
-        if (!success)
-            delay(25);
-    }
-    //  digitalWrite(TXLED, HIGH);
+    success = radio.write(data, bytes);
     radio.startListening();
     return success;
 }
@@ -110,6 +101,7 @@ void setup() {
     Serial.println("running");
     radio.begin();
     //  radio.setPALevel(RF24_PA_MAX);
+    radio.setRetries(15, 5);
     radio.setChannel(100);
     radio.setDataRate(RF24_1MBPS);
     //  radio.setDataRate(RF24_250KBPS);
