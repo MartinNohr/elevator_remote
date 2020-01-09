@@ -16,7 +16,7 @@ unsigned long lastTimeButtonSent;
 #define UP 0
 #define DOWN 1
 // button arrays
-int btnPins[] = { 9, 10 };  // SD3/GPIO10 and SD2/GPI09
+int btnPins[] = { 10, D3 };  // SD3/GPIO10 and SD2/GPI09
 // these are bit arrays
 byte btnValues = 0;
 byte btnPrevious = 0;
@@ -92,11 +92,9 @@ void setup() {
     digitalWrite(ELEV_IS_UP_LED, LOW);
     blinkLED(1, 500, 0);
     for (int i = 0; i < (sizeof(btnPins) / sizeof(*btnPins)); ++i) {
-        if (btnPins[i]) {
-            pinMode(btnPins[i], INPUT_PULLUP);
-            Serial.print("button: ");
-            Serial.println(btnPins[i]);
-        }
+        pinMode(btnPins[i], INPUT_PULLUP);
+        Serial.print("button: ");
+        Serial.println(btnPins[i]);
     }
     Serial.println("running");
     radio.begin();
